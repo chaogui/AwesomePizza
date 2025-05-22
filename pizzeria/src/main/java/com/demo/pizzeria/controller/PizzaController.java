@@ -1,7 +1,7 @@
 package com.demo.pizzeria.controller;
 
 import com.demo.pizzeria.data.Pizza;
-import com.demo.pizzeria.exception.ResourceAlreadyExistException;
+import com.demo.pizzeria.exception.ResourceAlreadyExistsException;
 import com.demo.pizzeria.exception.ResourceNotFoundException;
 import com.demo.pizzeria.request.UpdatePizzaRequest;
 import com.demo.pizzeria.response.CustomResponse;
@@ -11,9 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -35,9 +32,8 @@ public class PizzaController {
     @GetMapping("/{id}")
     public ResponseEntity<CustomResponse> getPizzaById(@PathVariable Long id) {
         log.info("getPizzaById called..");
-        Pizza pizza = null;
         try {
-            pizza = pizzaService.getPizzaById(id);
+            Pizza pizza = pizzaService.getPizzaById(id);
             return ResponseEntity.ok(new CustomResponse("get success", pizza));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomResponse("Pizza with id = " + id + " not found", null));
@@ -50,7 +46,7 @@ public class PizzaController {
         try {
             pizza = pizzaService.addPizza(pizza);
             return ResponseEntity.ok(new CustomResponse("update success", pizza));
-        } catch (ResourceAlreadyExistException e) {
+        } catch (ResourceAlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new CustomResponse(e.getMessage(), null));
         }
     }

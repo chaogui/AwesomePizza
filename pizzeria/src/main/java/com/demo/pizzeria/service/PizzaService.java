@@ -1,7 +1,7 @@
 package com.demo.pizzeria.service;
 
 import com.demo.pizzeria.data.Pizza;
-import com.demo.pizzeria.exception.ResourceAlreadyExistException;
+import com.demo.pizzeria.exception.ResourceAlreadyExistsException;
 import com.demo.pizzeria.exception.ResourceNotFoundException;
 import com.demo.pizzeria.repository.PizzaRepository;
 import com.demo.pizzeria.request.UpdatePizzaRequest;
@@ -36,12 +36,12 @@ public class PizzaService implements IPizzaService{
     }
 
     @Override
-    public Pizza addPizza(Pizza pizza) throws ResourceAlreadyExistException {
+    public Pizza addPizza(Pizza pizza) throws ResourceAlreadyExistsException {
         if(pizzaRepository.findById(pizza.getId()).isPresent()){
-            throw new ResourceAlreadyExistException("Pizza with id = "+pizza.getId() +" already exists. You may update the pizza.");
+            throw new ResourceAlreadyExistsException("Pizza with id = "+pizza.getId() +" already exists. You may update the pizza.");
         }
         if(pizzaRepository.existsByName(pizza.getName())){
-            throw new ResourceAlreadyExistException("Pizza with name = "+pizza.getName() +" already exists. You may update the pizza.");
+            throw new ResourceAlreadyExistsException("Pizza with name = "+pizza.getName() +" already exists. You may update the pizza.");
         }
         return pizzaRepository.save(pizza);
     }
