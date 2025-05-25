@@ -32,6 +32,10 @@ public class OrderItem {
     @JoinColumn(name = "pizza_id")
     private Pizza pizza;
 
+//    @ManyToOne
+//    @JoinColumn(name = "pizza_id")
+//    private Pizza pizza;
+
     public OrderItem(Order order, Pizza pizza, Integer quantity, BigDecimal price) {
         this.order = order;
         this.pizza = pizza;
