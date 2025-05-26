@@ -57,7 +57,7 @@ public class PizzaService implements IPizzaService{
 
     public Pizza updateExistingPizza(Pizza pizza, UpdatePizzaRequest request) {
         pizza.setName(request.getName());
-        pizza.setToppings(request.getToppings());
+        //pizza.setToppings(request.getToppings());
         pizza.setPrice(request.getPrice());
         return pizza;
     }

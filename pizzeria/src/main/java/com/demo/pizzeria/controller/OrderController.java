@@ -1,16 +1,15 @@
 package com.demo.pizzeria.controller;
 
 import com.demo.pizzeria.data.Order;
-import com.demo.pizzeria.data.Pizza;
 import com.demo.pizzeria.exception.ResourceAlreadyExistsException;
 import com.demo.pizzeria.exception.ResourceNotFoundException;
 import com.demo.pizzeria.request.UpdateOrderRequest;
-import com.demo.pizzeria.request.UpdatePizzaRequest;
 import com.demo.pizzeria.response.CustomResponse;
 import com.demo.pizzeria.service.IOrderService;
-import com.demo.pizzeria.service.IPizzaService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +20,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/order")
-@Slf4j
 @AllArgsConstructor
 public class OrderController {
 
     private final IOrderService orderService;
-
+    private static final Logger log = LoggerFactory.getLogger(OrderController.class);
     @GetMapping("/")
     public ResponseEntity<CustomResponse> getOrders(){
         log.info("getOrders called..");

@@ -22,14 +22,18 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime orderDate;
+    private LocalDateTime createdTime;
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+//    @Enumerated(EnumType.STRING)
+//    private OrderStatus orderStatus;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OrderItem> orderItems = new HashSet<>();
+    private String status;
+    private LocalDateTime completedTime;
+    private Long userId;
+//
+//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<OrderItem> orderItems = new HashSet<>();
 
 //    @ManyToOne
 //    @JoinColumn(name = "user_id")

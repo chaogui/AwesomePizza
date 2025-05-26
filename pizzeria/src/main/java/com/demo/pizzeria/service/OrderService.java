@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,7 +35,7 @@ public class OrderService implements IOrderService{
     @Override
     public List<Order> getOrdersByDate(LocalDate date)  {
         return orderRepository
-                .findByDate(date);
+                .findByCreatedTime(date);
     }
 
     @Override

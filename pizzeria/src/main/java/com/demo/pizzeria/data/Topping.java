@@ -1,18 +1,20 @@
 package com.demo.pizzeria.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Data;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "Toppings")
+@Table(name = "toppings")
 public class Topping {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String name;
 }

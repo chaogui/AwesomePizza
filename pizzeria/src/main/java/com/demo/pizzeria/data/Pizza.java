@@ -1,19 +1,23 @@
 package com.demo.pizzeria.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "Pizze")
+@Table(name = "pizzas")
 public class Pizza {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String name;
-    List<Topping> toppings;
+    //List<Topping> toppings;
     BigDecimal price;
+    String description;
 }
