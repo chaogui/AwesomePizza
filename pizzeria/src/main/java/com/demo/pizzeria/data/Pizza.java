@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Getter
 @Setter
@@ -17,7 +18,14 @@ public class Pizza {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String name;
-    //List<Topping> toppings;
     BigDecimal price;
     String description;
+
+    @ManyToMany
+    @JoinTable(
+            name = "pizza_toppings",
+            joinColumns = @JoinColumn(name = "pizza_id"),
+            inverseJoinColumns = @JoinColumn(name = "topping_id")
+    )
+    private Set<Topping> toppings = new HashSet<>();
 }

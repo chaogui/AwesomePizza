@@ -57,7 +57,7 @@ public class OrderController {
     }
 
     @PostMapping("")
-    public ResponseEntity<CustomResponse> createOrder(Order order){
+    public ResponseEntity<CustomResponse> createOrder(@RequestBody Order order){
         log.info("createOrder called..");
         try {
             order = orderService.createOrder(order);
@@ -68,7 +68,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponse> updateOrderById(@PathVariable("id") Long id, UpdateOrderRequest request){
+    public ResponseEntity<CustomResponse> updateOrderById(@PathVariable("id") Long id, @RequestBody UpdateOrderRequest request){
         log.info("updateOrderById called..");
         try {
             Order order = orderService.updateOrder(id, request);

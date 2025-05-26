@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-public class UpdatePizzaRequest {
+public class CreatePizzaRequest {
 
     String name;
     BigDecimal price;

@@ -1,20 +1,27 @@
 package com.demo.pizzeria.service;
 
 import com.demo.pizzeria.data.Pizza;
+import com.demo.pizzeria.data.Topping;
 import com.demo.pizzeria.exception.ResourceAlreadyExistsException;
 import com.demo.pizzeria.exception.ResourceNotFoundException;
 import com.demo.pizzeria.repository.PizzaRepository;
+import com.demo.pizzeria.repository.ToppingRepository;
+import com.demo.pizzeria.request.CreatePizzaRequest;
 import com.demo.pizzeria.request.UpdatePizzaRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class PizzaService implements IPizzaService{
 
     private final PizzaRepository pizzaRepository;
+    private final ToppingRepository toppingRepository;
 
     @Override
     public Pizza getPizzaById(Long id) throws ResourceNotFoundException {
@@ -36,13 +43,33 @@ public class PizzaService implements IPizzaService{
     }
 
     @Override
-    public Pizza addPizza(Pizza pizza) throws ResourceAlreadyExistsException {
-        if(pizzaRepository.findById(pizza.getId()).isPresent()){
-            throw new ResourceAlreadyExistsException("Pizza with id = "+pizza.getId() +" already exists. You may update the pizza.");
+    @Transactional
+    public Pizza addPizza(CreatePizzaRequest request)throws ResourceAlreadyExistsException {
+
+//        if(pizzaRepository.findById(pizza.getId()).isPresent()){
+//            throw new ResourceAlreadyExistsException("Pizza with id = "+pizza.getId() +" already exists. You may update the pizza.");
+//        }
+        if(pizzaRepository.existsByName(request.getName())){
+            throw new ResourceAlreadyExistsException("Pizza with name = "+request.getName() +" already exists. You may update the pizza.");
         }
-        if(pizzaRepository.existsByName(pizza.getName())){
-            throw new ResourceAlreadyExistsException("Pizza with name = "+pizza.getName() +" already exists. You may update the pizza.");
-        }
+        Pizza pizza = new Pizza();
+        pizza.setName(request.getName());
+        pizza.setPrice(request.getPrice());
+        pizza.setDescription(request.getDescription());
+
+        Set<Topping> toppings = request
+                .getToppingNames()
+                .stream()
+                .map(name -> toppingRepository
+                        .findByName(name)
+                        .orElseGet(() -> {
+                            Topping topping = new Topping();
+                            topping.setName(name);
+                            return toppingRepository.save(topping);
+                        }))
+                .collect(Collectors.toSet());
+        pizza.setToppings(toppings);
+
         return pizzaRepository.save(pizza);
     }
 
@@ -57,8 +84,21 @@ public class PizzaService implements IPizzaService{
 
     public Pizza updateExistingPizza(Pizza pizza, UpdatePizzaRequest request) {
         pizza.setName(request.getName());
-        //pizza.setToppings(request.getToppings());
         pizza.setPrice(request.getPrice());
+        pizza.setDescription(request.getDescription());
+
+        Set<Topping> toppings = request.getToppingNames()
+                .stream()
+                .map(name -> toppingRepository
+                        .findByName(name)
+                        .orElseGet(() -> {
+                            Topping topping = new Topping();
+                            topping.setName(name);
+                            return toppingRepository.save(topping);
+                        }))
+                .collect(Collectors.toSet());
+        pizza.setToppings(toppings);//replace toppings: remove old relations and add new relations
+
         return pizza;
     }
 

@@ -3,6 +3,7 @@ package com.demo.pizzeria.controller;
 import com.demo.pizzeria.data.Pizza;
 import com.demo.pizzeria.exception.ResourceAlreadyExistsException;
 import com.demo.pizzeria.exception.ResourceNotFoundException;
+import com.demo.pizzeria.request.CreatePizzaRequest;
 import com.demo.pizzeria.request.UpdatePizzaRequest;
 import com.demo.pizzeria.response.CustomResponse;
 import com.demo.pizzeria.service.IPizzaService;
@@ -41,18 +42,19 @@ public class PizzaController {
     }
 
     @PostMapping("")
-    public ResponseEntity<CustomResponse> addPizza(Pizza pizza){
+    public ResponseEntity<CustomResponse> addPizza(@RequestBody CreatePizzaRequest request){
         log.info("addPizza called..");
         try {
-            pizza = pizzaService.addPizza(pizza);
-            return ResponseEntity.ok(new CustomResponse("update success", pizza));
+            //log.info(String.valueOf(pizza.getId()));
+            Pizza pizza = pizzaService.addPizza(request);
+            return ResponseEntity.ok(new CustomResponse("create success", pizza));
         } catch (ResourceAlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new CustomResponse(e.getMessage(), null));
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponse> updatePizzaById(@PathVariable("id") Long id, UpdatePizzaRequest request){
+    public ResponseEntity<CustomResponse> updatePizzaById(@PathVariable("id") Long id, @RequestBody UpdatePizzaRequest request){
         log.info("updatePizzaById called..");
         try {
             Pizza pizza = pizzaService.updatePizza(id, request);
