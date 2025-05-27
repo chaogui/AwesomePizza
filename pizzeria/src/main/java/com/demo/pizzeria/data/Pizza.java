@@ -1,11 +1,17 @@
 package com.demo.pizzeria.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,4 +34,8 @@ public class Pizza {
             inverseJoinColumns = @JoinColumn(name = "topping_id")
     )
     private Set<Topping> toppings = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pizza")
+    private List<OrderItem> orderItems = new ArrayList<>();
 }

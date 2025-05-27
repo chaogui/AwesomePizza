@@ -1,13 +1,14 @@
 package com.demo.pizzeria.controller;
 
 import com.demo.pizzeria.data.Order;
+import com.demo.pizzeria.dto.OrderDto;
 import com.demo.pizzeria.exception.ResourceAlreadyExistsException;
 import com.demo.pizzeria.exception.ResourceNotFoundException;
+import com.demo.pizzeria.request.CreateOrderRequest;
 import com.demo.pizzeria.request.UpdateOrderRequest;
 import com.demo.pizzeria.response.CustomResponse;
 import com.demo.pizzeria.service.IOrderService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class OrderController {
         return ResponseEntity.ok(new CustomResponse("get success", orderService.getOrders()));
     }
 
-    @GetMapping("/{date}")
+    @GetMapping("/date/{date}")
     public ResponseEntity<CustomResponse> getOrdersByDate(@PathVariable("date") String date){
         log.info("getOrdersByDate called..");
         //string to LocalDate
@@ -50,18 +51,20 @@ public class OrderController {
         log.info("getOrderById called..");
         try {
             Order order = orderService.getOrderById(id);
-            return ResponseEntity.ok(new CustomResponse("get success", order));
+            OrderDto orderDto = orderService.convertToDto(order);
+            return ResponseEntity.ok(new CustomResponse("get success", orderDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomResponse(e.getMessage(), null));
         }
     }
 
     @PostMapping("")
-    public ResponseEntity<CustomResponse> createOrder(@RequestBody Order order){
+    public ResponseEntity<CustomResponse> createOrder(@RequestBody CreateOrderRequest request){
         log.info("createOrder called..");
         try {
-            order = orderService.createOrder(order);
-            return ResponseEntity.ok(new CustomResponse("create success", order));
+            Order order = orderService.createOrder(request);
+            OrderDto orderDto = orderService.convertToDto(order);
+            return ResponseEntity.ok(new CustomResponse("create success: " + order.getId(), orderDto));
         } catch (ResourceAlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new CustomResponse(e.getMessage(), null));
         }
@@ -72,7 +75,8 @@ public class OrderController {
         log.info("updateOrderById called..");
         try {
             Order order = orderService.updateOrder(id, request);
-            return ResponseEntity.ok(new CustomResponse("update success", order));
+            OrderDto orderDto = orderService.convertToDto(order);
+            return ResponseEntity.ok(new CustomResponse("update success", orderDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomResponse(e.getMessage(), null));
         }

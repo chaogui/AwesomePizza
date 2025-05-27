@@ -31,9 +31,9 @@ public class Order {
     private String status;
     private LocalDateTime completedTime;
     private Long userId;
-//
-//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<OrderItem> orderItems = new HashSet<>();
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderItem> items = new HashSet<>();
 
 //    @ManyToOne
 //    @JoinColumn(name = "user_id")

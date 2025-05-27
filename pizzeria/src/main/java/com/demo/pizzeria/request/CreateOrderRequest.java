@@ -1,14 +1,12 @@
 package com.demo.pizzeria.request;
 
+import com.demo.pizzeria.dto.OrderItemDto;
 import lombok.Data;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class CreateOrderRequest {
 
-    String name;
-    //List<Topping> toppings;
-    BigDecimal price;
-    String description;
+    List<OrderItemDto> items;
 }

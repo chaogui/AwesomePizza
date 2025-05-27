@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PizzaController.class)
-class PizzaControllerTest {
+class OrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -28,7 +28,7 @@ class PizzaControllerTest {
     @TestConfiguration
     static class TestConfig {
         @Bean
-        PizzaService pizzaService(PizzaControllerTest testInstance) {
+        PizzaService pizzaService(OrderControllerTest testInstance) {
             return testInstance.pizzaService; // inject mock into Spring context
         }
     }
