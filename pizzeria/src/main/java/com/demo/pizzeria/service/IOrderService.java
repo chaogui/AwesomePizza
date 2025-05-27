@@ -20,4 +20,7 @@ public interface IOrderService {
     void deleteOrderById(Long id) throws ResourceNotFoundException;
 
     OrderDto convertToDto(Order order);
+
+    void updateStatus(Long id, String newStatus) throws ResourceNotFoundException;
+    Order findOrderToWork();
 }

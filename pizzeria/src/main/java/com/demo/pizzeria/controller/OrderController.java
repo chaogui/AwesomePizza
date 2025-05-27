@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -77,6 +78,18 @@ public class OrderController {
             Order order = orderService.updateOrder(id, request);
             OrderDto orderDto = orderService.convertToDto(order);
             return ResponseEntity.ok(new CustomResponse("update success", orderDto));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new CustomResponse(e.getMessage(), null));
+        }
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<CustomResponse> updateOrderStatus(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        log.info("updateOrderStatus called..");
+        try {
+            String newStatus = payload.get("status");
+            orderService.updateStatus(id, newStatus);
+            return ResponseEntity.ok(new CustomResponse("update status success", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new CustomResponse(e.getMessage(), null));
         }

@@ -90,6 +90,20 @@ public class OrderService implements IOrderService{
     }
 
     @Override
+    public void updateStatus(Long id, String newStatus) throws ResourceNotFoundException {
+        orderRepository
+                .findById(id)
+                .map(orderInDb -> updateStatus(orderInDb, newStatus))
+                .map(orderRepository::save)
+                .orElseThrow(()->new ResourceNotFoundException("Order with id = " + id +" not found."));
+    }
+
+    private Order updateStatus(Order orderInDb, String newStatus) {
+        orderInDb.setStatus(newStatus);
+        return orderInDb;
+    }
+
+    @Override
     public void deleteOrderById(Long id) throws ResourceNotFoundException {
         if(getOrderById(id) == null){
             throw new ResourceNotFoundException("Pizza with id = " + id +" not found.");
@@ -124,5 +138,13 @@ public class OrderService implements IOrderService{
         dto.setQuantity(item.getQuantity());
         dto.setPrice(item.getPrice());
         return dto;
+    }
+
+    public Order findOrderToWork() {
+        List<Order> orders = orderRepository.findOrdersToWork();
+        if(orders.isEmpty()){
+            return null;
+        }
+        return orders.get(0);
     }
 }
