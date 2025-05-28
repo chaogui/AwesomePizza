@@ -27,7 +27,7 @@ public class OrderController {
 
     private final IOrderService orderService;
     private static final Logger log = LoggerFactory.getLogger(OrderController.class);
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<CustomResponse> getOrders(){
         log.info("getOrders called..");
         return ResponseEntity.ok(new CustomResponse("get success", orderService.getOrders()));

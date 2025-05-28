@@ -2,18 +2,15 @@ package com.demo.pizzeria.controller;
 
 import com.demo.pizzeria.data.Pizza;
 import com.demo.pizzeria.exception.ResourceAlreadyExistsException;
-import com.demo.pizzeria.repository.PizzaRepository;
-import com.demo.pizzeria.repository.ToppingRepository;
 import com.demo.pizzeria.request.CreatePizzaRequest;
 import com.demo.pizzeria.request.UpdatePizzaRequest;
 import com.demo.pizzeria.service.IPizzaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -37,13 +34,7 @@ public class PizzaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
-    PizzaRepository pizzaRepository;
-
-    @Mock
-    ToppingRepository toppingRepository;
-
-    @InjectMocks
+    @MockitoBean
     IPizzaService pizzaService;
 
     @Autowired
@@ -56,7 +47,8 @@ public class PizzaControllerTest {
 
         pizza = new Pizza();
         pizza.setId(1L);
-        pizza.setName("Diavola");
+        pizza.setName("Margherita");
+        pizza.setDescription("Margherita Desc");
         pizza.setPrice(BigDecimal.valueOf(10.00));
         //pizza.setToppings();
     }
@@ -75,81 +67,90 @@ public class PizzaControllerTest {
 
         // verify
         response.andDo(print())
-                .andExpect(jsonPath("$.name", is(pizza.getName())))
-                .andExpect(jsonPath("$.description", is(pizza.getDescription())))
-                .andExpect(jsonPath("$.id", is(pizza.getId())));
+                .andExpect(jsonPath("$.data.name", is(pizza.getName())))
+                .andExpect(jsonPath("$.data.description", is(pizza.getDescription())))
+                .andExpect(jsonPath("$.data.id", is(pizza.getId().intValue())));
     }
 
     //Get Controller
     @Test
-    @Order(2)
+    @Order(2)//test OK
     public void getPizzaTest() throws Exception{
         // precondition
         List<Pizza> list = new ArrayList<>();
         list.add(pizza);
-//        pizza = new Pizza();
-//        pizza.setId(1L);
-//        pizza.setName("Diavola");
-//        pizza.setPrice(BigDecimal.valueOf(10.00));
-        //list.add(Pizza.builder().id(2L).firstName("Sam").lastName("Curran").email("sam@gmail.com").build());
+
+        Pizza pizza1 = new Pizza();
+        pizza1.setId(1L);
+        pizza1.setName("Diavola");
+        pizza1.setPrice(BigDecimal.valueOf(10.00));
+        list.add(pizza1);
+
         given(pizzaService.getAllPizza()).willReturn(list);
 
         // action
-        ResultActions response = mockMvc.perform(get("/api/Pizzas"));
+        ResultActions response = mockMvc.perform(get("/pizza"));
 
         // verify the output
         response.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.size()",is(list.size())));
+                .andExpect(jsonPath("$.data.size()",is(list.size())));
 
     }
 
     //get by Id controller
     @Test
-    @Order(3)
-    public void getByIdPizzaTest() throws Exception{
+    @Order(3)//test OK
+    public void getPizzaByIdTest() throws Exception{
         // precondition
         given(pizzaService.getPizzaById(pizza.getId())).willReturn(pizza);
 
         // action
-        ResultActions response = mockMvc.perform(get("/api/Pizzas/{id}", pizza.getId()));
+        ResultActions response = mockMvc.perform(get("/pizza/{id}", pizza.getId()));
 
         // verify
         response.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.name", is(pizza.getName())))
-                .andExpect(jsonPath("$.description", is(pizza.getDescription())))
-                .andExpect(jsonPath("$.id", is(pizza.getId())));
+                .andExpect(jsonPath("$.data.name", is(pizza.getName())))
+                .andExpect(jsonPath("$.data.description", is(pizza.getDescription())))
+                .andExpect(jsonPath("$.data.id", is(pizza.getId().intValue())));
 
     }
 
 
     //Update Pizza
     @Test
-    @Order(4)
+    @Order(4)//test OK
     public void updatePizzaTest() throws Exception{
         // precondition
         given(pizzaService.getPizzaById(pizza.getId())).willReturn(pizza);
-        pizza.setName("Margherita");
-        pizza.setDescription("Margherita description");
-        given(pizzaService.updatePizza(pizza.getId(), new UpdatePizzaRequest())).willReturn(pizza);
+
+        UpdatePizzaRequest request = new UpdatePizzaRequest();
+        request.setName("Margherita");
+        request.setDescription("Margherita description");
+
+        pizza.setDescription(request.getDescription());
+        pizza.setName(request.getName());
+
+        given(pizzaService.updatePizza(pizza.getId(), request)).willReturn(pizza);
 
         // action
         ResultActions response = mockMvc
-                .perform(put("/api/Pizzas/{id}", pizza.getId())
+                .perform(put("/pizza/{id}", pizza.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(pizza)));
+                .content(objectMapper.writeValueAsString(request)));
 
         // verify
         response.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.name", is(pizza.getName())))
-                .andExpect(jsonPath("$.description", is(pizza.getDescription())));
+                .andExpect(jsonPath("$.data.name", is(request.getName())))
+                .andExpect(jsonPath("$.data.description", is(request.getDescription())));
     }
 
 
     // delete Pizza
     @Test
+    @Order(5)//test OK
     public void deletePizzaTest() throws Exception{
         // precondition
         willDoNothing().given(pizzaService).deletePizzaById(pizza.getId());

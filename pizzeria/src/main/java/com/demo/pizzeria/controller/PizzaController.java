@@ -24,9 +24,9 @@ public class PizzaController {
 
     private final IPizzaService pizzaService;
 
-    @GetMapping("/")
-    public ResponseEntity<CustomResponse> getAllPizze(){
-        log.info("getAllPizze called..");
+    @GetMapping("")
+    public ResponseEntity<CustomResponse> getAllPizzas(){
+        log.info("getAllPizzas called..");
         return ResponseEntity.ok(new CustomResponse("get success", pizzaService.getAllPizza()));
     }
 

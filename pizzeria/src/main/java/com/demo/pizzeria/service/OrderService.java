@@ -12,6 +12,7 @@ import com.demo.pizzeria.repository.PizzaRepository;
 import com.demo.pizzeria.request.CreateOrderRequest;
 import com.demo.pizzeria.request.UpdateOrderRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class OrderService implements IOrderService{
 
     private final OrderRepository orderRepository;
@@ -121,6 +123,7 @@ public class OrderService implements IOrderService{
 
     @Override
     public OrderDto convertToDto(Order order){
+        log.info("convertToDto called");
         OrderDto orderDto = modelMapper.map(order, OrderDto.class);
         Set<OrderItemDto> setItems = order
                 .getItems()
