@@ -2,13 +2,11 @@ package com.demo.pizzeria.controller;
 
 import com.demo.pizzeria.data.Pizza;
 import com.demo.pizzeria.request.CreatePizzaRequest;
-import com.demo.pizzeria.service.PizzaService;
+import com.demo.pizzeria.service.IOrderService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,15 +21,15 @@ class OrderControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private PizzaService pizzaService;  // standard mock
+    private IOrderService orderService;  // standard mock
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        PizzaService pizzaService(OrderControllerTest testInstance) {
-            return testInstance.pizzaService; // inject mock into Spring context
-        }
-    }
+//    @TestConfiguration
+//    static class TestConfig {
+//        @Bean
+//        PizzaService pizzaService(OrderControllerTest testInstance) {
+//            return testInstance.pizzaService; // inject mock into Spring context
+//        }
+//    }
 
     @Test
     void createPizza_returnsCreatedPizza() throws Exception {
