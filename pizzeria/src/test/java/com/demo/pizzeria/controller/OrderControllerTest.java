@@ -1,6 +1,7 @@
 package com.demo.pizzeria.controller;
 
 import com.demo.pizzeria.data.Order;
+import com.demo.pizzeria.dto.OrderDto;
 import com.demo.pizzeria.exception.ResourceAlreadyExistsException;
 import com.demo.pizzeria.request.CreateOrderRequest;
 import com.demo.pizzeria.request.UpdateOrderRequest;
@@ -20,7 +21,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,6 +49,7 @@ class OrderControllerTest {
 
 
     Order order;
+    OrderDto orderDto;
 
     @BeforeEach
     public void setup() {
@@ -54,23 +58,26 @@ class OrderControllerTest {
         order.setId(1L);
         order.setStatus("CREATED");
         order.setTotalPrice(BigDecimal.valueOf(30.0));
-//        order.setName("Margherita");
-//        order.setDescription("Margherita Desc");
-//        order.setPrice(BigDecimal.valueOf(10.00));
-        //order.setToppings();
+
+        orderDto = new OrderDto();
+        orderDto.setId(order.getId());
+        orderDto.setStatus(order.getStatus());
+        orderDto.setTotalPrice(order.getTotalPrice());
     }
 
     //Post Controller
     @Test
     @org.junit.jupiter.api.Order(1)
-    public void saveOrderTest() throws Exception, ResourceAlreadyExistsException {
+    public void createOrderTest() throws Exception, ResourceAlreadyExistsException {
         // precondition
         given(orderService.createOrder(any(CreateOrderRequest.class))).willReturn(order);
+        given(orderService.convertToDto(order)).willReturn(orderDto);
 
         // action
-        ResultActions response = mockMvc.perform(post("/order")
+        ResultActions response = mockMvc
+                .perform(post("/order")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(order)));
+                .content(objectMapper.writeValueAsString(new CreateOrderRequest())));
 
         // verify
         response.andDo(print())
@@ -110,6 +117,7 @@ class OrderControllerTest {
     public void getOrderByIdTest() throws Exception {
         // precondition
         given(orderService.getOrderById(order.getId())).willReturn(order);
+        given(orderService.convertToDto(order)).willReturn(orderDto);
 
         // action
         ResultActions response = mockMvc.perform(get("/order/{id}", order.getId()));
@@ -129,13 +137,14 @@ class OrderControllerTest {
     public void updateOrderTest() throws Exception {
         // precondition
         given(orderService.getOrderById(order.getId())).willReturn(order);
+        given(orderService.convertToDto(order)).willReturn(orderDto);
 
         UpdateOrderRequest request = new UpdateOrderRequest();
         request.setOrderStatus("COMPLETED");
         request.setCompletionDate(LocalDateTime.now());
 
-        order.setStatus(request.getOrderStatus());
-        order.setCompletedTime(request.getCompletionDate());
+        orderDto.setStatus(request.getOrderStatus());
+        orderDto.setCompletedTime(request.getCompletionDate());
 
         given(orderService.updateOrder(order.getId(), request)).willReturn(order);
 
@@ -149,7 +158,28 @@ class OrderControllerTest {
         response.andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.data.status", is(request.getOrderStatus())))
-                .andExpect(jsonPath("$.data.id", is(order.getId())));
+                .andExpect(jsonPath("$.data.id", is(order.getId().intValue())));
+    }
+
+    @Test
+    @org.junit.jupiter.api.Order(4)//test OK
+    public void updateOrderStatusTest() throws Exception {
+        // precondition
+        given(orderService.getOrderById(order.getId())).willReturn(order);
+        given(orderService.convertToDto(order)).willReturn(orderDto);
+
+        // action
+        Map<String, String> mapStr = new HashMap<>();
+        mapStr.put("status","COMPLETED");
+
+        ResultActions response = mockMvc
+                .perform(patch("/order/{id}/status", order.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(mapStr)));
+
+        // verify
+        response.andExpect(status().isOk())
+                .andDo(print());
     }
 
 
