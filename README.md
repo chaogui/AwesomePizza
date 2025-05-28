@@ -1,44 +1,8 @@
 # AwesomePizza
 
-It's an online Pizzeria where you can order pizza 
+It's an online Pizzeria where you can order pizza    
 
-
-### Data Tables
-##### Pizza
-
-| id  | name                         | price | description                                                                                                                                 |
-| --- | ---------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | MARINARA                     | 6.5   | Aglio, pomodoro, prezzemolo, olio evo                                                                                                       |
-| 2   | MEDITERRANEA                 | 7.5   | Olive nere*, cipolla rossa, pomodoro, origano  <br>                                                                                         |
-| 3   | MARGHERITA  <br>             | 8.5   | Fiordilatte, pomodoro, basilico, olio evo                                                                                                   |
-| 4   | PROVOLA  <br>                | 9.5   | Provola affumicata al naturale, pomodoro bio, basilico, pepe nero, olio evo                                                                 |
-| 5   | BUFALA                       | 10.5  | <br>Mozzarella di bufala, pomodoro, basilico, olio evo                                                                                      |
-| 6   | NAPOLI  <br>                 | 11    | Acciughe siciliane di Aspra, capperi di Salina, fiordilatte campano, pomodoro bio, origano  <br>                                            |
-| 8   | SALSICCIA E PARMIGIANO  <br> | 11    | Salsiccia , pomodoro, parmigiano, semi di finocchio  <br>                                                                                   |
-| 9   | DIAVOLA  <br>                | 11.5  | Salamino piccante, pomodoro, fiordilatte, prezzemolo                                                                                        |
-| 10  | ORTOLANA  <br>               | 11.5  | Zucchine al forno, patate schiacciate all’olio, provola affumicata al naturale, pesto di basilico con mandorle, pomodorini confit, basilico |
-| 11  | BOLOGNA  <br>                | 12    | Mortadella , patate , fiordilatte, pesto                                                                                                    |
-| 12  | SPECK E GORGONZOLA  <br>     | 12    | Speck, gorgonzola , fiordilatte , miele di Acacia, noci                                                                                     |
-| 13  | TONNO  <br>                  | 11.5  | Tonno Callipo, cipolla rossa saltata, fiordilatte campano, salsa verde, olive nere*, origano                                                |
-|     |                              |       |                                                                                                                                             |
-
-##### Toppings
-
-| id  | name                  |     |
-| --- | --------------------- | --- |
-| 1   | fiordilatte campano   |     |
-| 2   | pomodoro bio          |     |
-| 3   | basilico              |     |
-| 4   | olio evo              |     |
-| 5   | cipolla rossa saltata |     |
-| 6   | fiordilatte           |     |
-| 7   | salsa verde           |     |
-| 8   | olive nere            |     |
-| 9   | origano               |     |
-| 10  | tonno                 |     |
-| 11  | speck                 |     |
-| 12  | gorgonzola            |     |
-
+## Prepare Database
 ### create user  and database
 
 ```sql
@@ -132,7 +96,7 @@ INSERT INTO public.pizzas (id, "name", price, description) VALUES(11, 'BOLOGNA',
 INSERT INTO public.pizzas (id, "name", price, description) VALUES(12, 'SPECK E GORGONZOLA', 12.00, 'Speck, gorgonzola , fiordilatte , miele di Acacia, noci');
 INSERT INTO public.pizzas (id, "name", price, description) VALUES(13, 'TONNO', 11.50, 'Tonno Callipo, cipolla rossa saltata, fiordilatte campano, salsa verde, olive nere*, origano');
 
-select * from pizzas order by id;
+-- update sequence
 SELECT pg_get_serial_sequence('pizzas', 'id');
 SELECT setval('public.pizzas_id_seq', 14);
 select nextval('public.pizzas_id_seq');
@@ -155,6 +119,7 @@ INSERT INTO public.toppings (id, "name") VALUES(8, 'tonno');
 INSERT INTO public.toppings (id, "name") VALUES(9, 'speck');
 INSERT INTO public.toppings (id, "name") VALUES(10, 'gorgonzola');
 
+-- update sequence
 SELECT pg_get_serial_sequence('toppings', 'id');
 SELECT setval('public.toppings_id_seq', 11);
 select nextval('public.toppings_id_seq');
@@ -162,3 +127,38 @@ select nextval('public.toppings_id_seq');
 
 ```
 
+### Data Tables
+##### Pizza
+
+| id  | name                         | price | description                                                                                                                                 |
+| --- | ---------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | MARINARA                     | 6.5   | Aglio, pomodoro, prezzemolo, olio evo                                                                                                       |
+| 2   | MEDITERRANEA                 | 7.5   | Olive nere*, cipolla rossa, pomodoro, origano  <br>                                                                                         |
+| 3   | MARGHERITA  <br>             | 8.5   | Fiordilatte, pomodoro, basilico, olio evo                                                                                                   |
+| 4   | PROVOLA  <br>                | 9.5   | Provola affumicata al naturale, pomodoro bio, basilico, pepe nero, olio evo                                                                 |
+| 5   | BUFALA                       | 10.5  | <br>Mozzarella di bufala, pomodoro, basilico, olio evo                                                                                      |
+| 6   | NAPOLI  <br>                 | 11    | Acciughe siciliane di Aspra, capperi di Salina, fiordilatte campano, pomodoro bio, origano  <br>                                            |
+| 8   | SALSICCIA E PARMIGIANO  <br> | 11    | Salsiccia , pomodoro, parmigiano, semi di finocchio  <br>                                                                                   |
+| 9   | DIAVOLA  <br>                | 11.5  | Salamino piccante, pomodoro, fiordilatte, prezzemolo                                                                                        |
+| 10  | ORTOLANA  <br>               | 11.5  | Zucchine al forno, patate schiacciate all’olio, provola affumicata al naturale, pesto di basilico con mandorle, pomodorini confit, basilico |
+| 11  | BOLOGNA  <br>                | 12    | Mortadella , patate , fiordilatte, pesto                                                                                                    |
+| 12  | SPECK E GORGONZOLA  <br>     | 12    | Speck, gorgonzola , fiordilatte , miele di Acacia, noci                                                                                     |
+| 13  | TONNO  <br>                  | 11.5  | Tonno Callipo, cipolla rossa saltata, fiordilatte campano, salsa verde, olive nere*, origano                                                |
+
+
+##### Toppings
+
+| id  | name                  |     
+| --- | --------------------- | 
+| 1   | fiordilatte campano   |     
+| 2   | pomodoro bio          |     
+| 3   | basilico              |     
+| 4   | olio evo              |     
+| 5   | cipolla rossa saltata |     
+| 6   | fiordilatte           |     
+| 7   | salsa verde           |     
+| 8   | olive nere            |     
+| 9   | origano               |     
+| 10  | tonno                 |     
+| 11  | speck                 |     
+| 12  | gorgonzola            |  
