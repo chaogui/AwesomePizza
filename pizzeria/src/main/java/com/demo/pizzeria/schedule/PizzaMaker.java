@@ -18,7 +18,8 @@ public class PizzaMaker {
 
     private final OrderService orderService;
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "*/10 * 12-15,19-23 * * 2-7")
+
     @Transactional
     public void makePizza() throws ResourceNotFoundException, InterruptedException {
 
